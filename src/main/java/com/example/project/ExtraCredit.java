@@ -1,31 +1,61 @@
 package com.example.project;
 import java.util.Scanner;
 
-
 public class ExtraCredit {
 
+    public static String formatMoney(double decimal) {
+        decimal = Math.round(decimal * 100) / 100.0;
+        String str = "$" + Double.toString(decimal);
+        boolean onesPlace = decimal == (double)((int)decimal);
+        boolean tenthsPlace = decimal * 10 == (double)((int)(decimal * 10));
+        if (onesPlace || tenthsPlace) str += "0";
+        return str + "\n";
+    }
 
     public static String calculateTip(int people, int percent, double cost, String items) {
         StringBuilder result = new StringBuilder();
 
-                //COPY AND PASTE YOUR CODE HERE 
+        double tip = Math.round(cost * percent) / 100.0; // I learned this method of rounding here: https://www.geeksforgeeks.org/java-program-to-round-a-number-to-n-decimal-places/
+        double perPersonBeforeTip = cost / people;       
+        double tipsPerPerson = 0.01 * (cost * percent) / people;   
+        double totalCostPerPerson = perPersonBeforeTip + tipsPerPerson;  
 
-        //the two lines  should go below result.append("-------------------------------\n"); 
-        result.append("Items ordered:\n");
-        result.append(items);
-
+        result.append("-------------------------------\n");
+        result.append("Total bill before tip: " + formatMoney(cost)); // concatenate to this string. DO NOT ERASE AND REWRITE
+        result.append("Total percentage: " + percent + "%\n");
+        result.append("Total tip: " + formatMoney(tip));
+        result.append("Total Bill with tip: " + formatMoney(cost + tip));
+        result.append("Per person cost before tip: " + formatMoney(perPersonBeforeTip));
+        result.append("Tip per person: " + formatMoney(tipsPerPerson));
+        result.append("Total cost per person: " + formatMoney(totalCostPerPerson));
+        result.append("-------------------------------\n");
+        result.append("Items ordered:\n" + items);
 
         return result.toString();
     }
                                    
     public static void main(String[] args) {
-        int people;
-        int percent;
-        double cost;
-        String items; 
+        Scanner scan = new Scanner(System.in);
 
-        //Your scanner object and while loop should go here
-                             
-        System.out.println(calculateTip(people,percent,cost,items));
+        System.out.print("How many people are in your party? ");
+        int people = scan.nextInt();
+
+        System.out.print("What percent tip? ");
+        int percent = scan.nextInt();
+
+        System.out.print("How much did your meal cost? $");
+        double cost = scan.nextDouble();
+
+        scan.nextLine();
+        String order = "";
+        String items = "";
+        while (true) {
+            System.out.print("Enter an item name or type '-1' to finish: ");
+            order = scan.nextLine();
+            if (order.equals("-1")) break;
+            items += order + "\n";
+        }
+
+        System.out.println(calculateTip(people, percent, cost, items));
     }
 }
